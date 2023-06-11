@@ -1,0 +1,118 @@
+# 1. Create a DID
+curl -X 'POST' \
+  'http://ssikit.com:7002/did/create' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "method": "key"
+}'
+--> University (Issuer): did:key:z6Mkgq1boRHFg5vs6RtPrBfroXQmRZNKX4zcsNLo7RnMtuwE
+
+curl -X 'POST' \
+  'http://ssikit.com:7002/did/create' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "method": "key"
+}'
+--> Student Emma (Holder): did:key:z6Mkucy75SJkK9fTZvZttVRbYBNpRHn22zoSWFRdhWeW5MSY
+
+# 2. Verifiable Diploma
+
+curl -X 'POST' \
+  'http://ssikit.com:7001/v1/credentials/issue' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "templateId": "UniversityDegree",
+  "config": {
+    "issuerDid": "did:key:z6Mkgq1boRHFg5vs6RtPrBfroXQmRZNKX4zcsNLo7RnMtuwE",
+    "subjectDid": "did:key:z6Mkucy75SJkK9fTZvZttVRbYBNpRHn22zoSWFRdhWeW5MSY",
+    "proofType": "LD_PROOF"
+  },
+  "credentialData": {
+    "id": "did:key:z6Mkucy75SJkK9fTZvZttVRbYBNpRHn22zoSWFRdhWeW5MSY",
+    "degree": {
+      "name": "Bachelor of Science and Arts",
+      "type": "BachelorDegree"
+    }
+  }
+}'
+
+---> Response (Verifiable Credential):
+{
+  "type" : [ "VerifiableCredential", "UniversityDegreeCredential" ],
+  "@context" : [ "https://www.w3.org/2018/credentials/v1", "https://www.w3.org/2018/credentials/examples/v1", "https://w3id.org/security/suites/jws-2020/v1" ],
+  "id" : "urn:uuid:5c0273df-3ba3-4c81-bcab-00f1bd1c0a21",
+  "issuer" : {
+    "id" : "did:key:z6Mkgq1boRHFg5vs6RtPrBfroXQmRZNKX4zcsNLo7RnMtuwE"
+  },
+  "issuanceDate" : "2023-06-11T18:19:11Z",
+  "issued" : "2023-06-11T18:19:11Z",
+  "validFrom" : "2023-06-11T18:19:11Z",
+  "credentialSubject" : {
+    "id" : "did:key:z6Mkucy75SJkK9fTZvZttVRbYBNpRHn22zoSWFRdhWeW5MSY",
+    "degree" : {
+      "name" : "Bachelor of Science and Arts",
+      "type" : "BachelorDegree"
+    }
+  },
+  "degree" : {
+    "name" : "Bachelor of Science and Arts",
+    "type" : "BachelorDegree"
+  },
+  "proof" : {
+    "type" : "JsonWebSignature2020",
+    "creator" : "did:key:z6Mkgq1boRHFg5vs6RtPrBfroXQmRZNKX4zcsNLo7RnMtuwE",
+    "created" : "2023-06-11T18:19:11Z",
+    "verificationMethod" : "did:key:z6Mkgq1boRHFg5vs6RtPrBfroXQmRZNKX4zcsNLo7RnMtuwE#z6Mkgq1boRHFg5vs6RtPrBfroXQmRZNKX4zcsNLo7RnMtuwE",
+    "jws" : "eyJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdLCJhbGciOiJFZERTQSJ9..1BNvmvUcunKxoTvL227EiRdm7-FIrpk3cIZzpaxJFeF9m77RxxwKn2N4MLqCutLL-cBEmNaqQ3qTGMNP3PneBg"
+  }
+}
+
+# 3. Verify The University Degree Credential
+
+curl -X 'POST' \
+  'http://ssikit.com:7003/v1/verify' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "policies": [
+    {
+      "policy": "SignaturePolicy"
+    }
+  ],
+  "credentials": [{
+                    "type" : [ "VerifiableCredential", "UniversityDegreeCredential" ],
+                    "@context" : [ "https://www.w3.org/2018/credentials/v1", "https://www.w3.org/2018/credentials/examples/v1", "https://w3id.org/security/suites/jws-2020/v1" ],
+                    "id" : "urn:uuid:5c0273df-3ba3-4c81-bcab-00f1bd1c0a21",
+                    "issuer" : {
+                      "id" : "did:key:z6Mkgq1boRHFg5vs6RtPrBfroXQmRZNKX4zcsNLo7RnMtuwE"
+                    },
+                    "issuanceDate" : "2023-06-11T18:19:11Z",
+                    "issued" : "2023-06-11T18:19:11Z",
+                    "validFrom" : "2023-06-11T18:19:11Z",
+                    "credentialSubject" : {
+                      "id" : "did:key:z6Mkucy75SJkK9fTZvZttVRbYBNpRHn22zoSWFRdhWeW5MSY",
+                      "degree" : {
+                        "name" : "Bachelor of Science and Arts",
+                        "type" : "BachelorDegree"
+                      }
+                    },
+                    "degree" : {
+                      "name" : "Bachelor of Science and Arts",
+                      "type" : "BachelorDegree"
+                    },
+                    "proof" : {
+                      "type" : "JsonWebSignature2020",
+                      "creator" : "did:key:z6Mkgq1boRHFg5vs6RtPrBfroXQmRZNKX4zcsNLo7RnMtuwE",
+                      "created" : "2023-06-11T18:19:11Z",
+                      "verificationMethod" : "did:key:z6Mkgq1boRHFg5vs6RtPrBfroXQmRZNKX4zcsNLo7RnMtuwE#z6Mkgq1boRHFg5vs6RtPrBfroXQmRZNKX4zcsNLo7RnMtuwE",
+                      "jws" : "eyJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdLCJhbGciOiJFZERTQSJ9..1BNvmvUcunKxoTvL227EiRdm7-FIrpk3cIZzpaxJFeF9m77RxxwKn2N4MLqCutLL-cBEmNaqQ3qTGMNP3PneBg"
+                    }
+                  }]
+}'
+
+
+---> Response:
+{"valid":true,"results":[{"result":true,"policyResults":{"SignaturePolicy":{"isSuccess":true}},"valid":true}]}
