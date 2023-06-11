@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+    wallet_ssikit:
+        container_name: wallet_ssikit
+        build:
+            context: .
+            dockerfile: ./docker/ssikit/Dockerfile
+        tty: true
+        volumes:
+            - ./.docker/container_data:/container_data
+        ports:
+            - "7000:7000"
+            - "7001:7001"
+            - "7002:7002"
+            - "7003:7003"
+            - "7004:7004"
+            - "7010:7010"
+        networks:
+            netw-wallet:
+                aliases:
+                    - wallet_ssikit
+
+networks:
+    netw-wallet:
