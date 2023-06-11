@@ -23,8 +23,6 @@ cd ssi-demo
 ```
 In this example, your current directory should be `~/ssi-example/ssi-demo`
 
-asd
-
 **4. Build services using docker-compose**
 ```
 docker-compose build --no-cache --progress=plain
@@ -47,6 +45,7 @@ To do so, you need to add a new line at the beginning of your hosts file:
 0.0.0.0		ssikit.com
 ```
 Now, save the changes and close the file (`/etc/hosts`).
+On Windows-based machine, the process of adding a new host is similar, whereas the file you need to edit is `C:\Windows\System32\drivers\etc\hosts`.
 
 
 
