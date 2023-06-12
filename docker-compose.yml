@@ -21,5 +21,19 @@ services:
                 aliases:
                     - wallet_ssikit
 
+    wallet_ssikit_cli:
+        container_name: wallet_ssikit_cli
+        build:
+            context: .
+            dockerfile: ./docker/ssikit_cli/Dockerfile
+        tty: true
+        volumes:
+            - ./.docker/container_data:/container_data
+        networks:
+            netw-wallet:
+                aliases:
+                    - wallet_ssikit_cli
+
+
 networks:
     netw-wallet:
