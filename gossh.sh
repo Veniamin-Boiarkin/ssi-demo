@@ -6,8 +6,7 @@ CONTAINER_ID=$(docker ps -aqf "name=^${CONTAINER_NAME}$")
 if [ -z "$CONTAINER_ID" ]
 then
       echo "Error: Couldn't find a container named \"${CONTAINER_NAME}\""
+else
+      echo "Connecting to ssh on the container ${CONTAINER_ID} (${CONTAINER_NAME})..."
+      docker exec -it "$CONTAINER_ID" /bin/bash
 fi
-
-echo "Connecting to ssh on the container ${CONTAINER_ID} (${CONTAINER_NAME})..."
-
-docker exec -it "$CONTAINER_ID" /bin/bash
